@@ -1,3 +1,49 @@
+'use strict';
+
+const titleTimer = document.querySelector('h1');
+const inputBlock = document.querySelector('.input');
+const inputTitle = document.querySelector('#title-date');
+const inputDate = document.querySelector('#date');
+const beginBtn = document.querySelector('#btn');
+const outputBlock = document.querySelector('.output');
+const completeTimer = document.querySelector('.complete');
+const resetBtn = document.querySelector('#btn-reset');
+
+function startTimer() {
+  if (!inputDate.value) {
+    return alert('Введите дату для таймера!');
+  }
+
+  let dateTimer = inputDate.value
+  titleTimer.textContent = inputTitle.value;
+
+  inputBlock.classList.add('hide');
+  beginBtn.classList.add('hide');
+
+  outputBlock.classList.remove('hide');
+  resetBtn.classList.remove('hide');
+}
+
+function resetTimer() {
+  titleTimer.textContent = 'Создать новый таймер обратного отсчета';
+  inputDate.value = '';
+  
+  inputBlock.classList.remove('hide');
+  beginBtn.classList.remove('hide');
+
+  outputBlock.classList.add('hide');
+  resetBtn.classList.add('hide');
+}
+
+beginBtn.addEventListener('click', startTimer);
+
+resetBtn.addEventListener('click', resetTimer);
+
+
+
+
+
+
 /* 
 1. Находим элементы html
 
