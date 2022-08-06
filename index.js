@@ -9,14 +9,7 @@ const outputBlock = document.querySelector('.output');
 const completeTimer = document.querySelector('.complete');
 const resetBtn = document.querySelector('#btn-reset');
 
-function startTimer() {
-  if (!inputDate.value) {
-    return alert('Введите дату для таймера!');
-  }
-
-  let dateTimer = inputDate.value
-  titleTimer.textContent = inputTitle.value;
-
+function closeFirstWindow() {
   inputBlock.classList.add('hide');
   beginBtn.classList.add('hide');
 
@@ -24,15 +17,30 @@ function startTimer() {
   resetBtn.classList.remove('hide');
 }
 
-function resetTimer() {
-  titleTimer.textContent = 'Создать новый таймер обратного отсчета';
-  inputDate.value = '';
-  
+function closeTimerWindow() {
   inputBlock.classList.remove('hide');
   beginBtn.classList.remove('hide');
 
   outputBlock.classList.add('hide');
   resetBtn.classList.add('hide');
+} 
+
+function startTimer() {
+  let dateTimer = inputDate.value
+
+  if (!dateTimer) {
+    return alert('Введите дату для таймера!');
+  }
+
+  titleTimer.textContent = inputTitle.value;
+  closeFirstWindow();
+}
+
+function resetTimer() {
+  titleTimer.textContent = 'Создать новый таймер обратного отсчета';
+  inputDate.value = '';
+  inputTitle.value = '';
+  closeTimerWindow();
 }
 
 beginBtn.addEventListener('click', startTimer);
