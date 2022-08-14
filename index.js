@@ -55,14 +55,9 @@ function startTimer() {
 function countdownTimer() {
   const nowTime = moment();
 
-  if (deadline < moment()) {
+  if (deadline.diff(nowTime) <= 0) {
     completeTimer.classList.remove('hide');
     completeTimer.textContent = `${inputTitle.value} завершился ${deadline.format('DD.MM.YYYY hh:mm:ss')}`;
-    clearInterval(timerId);
-    return;
-  }
-
-  if (deadline.diff(nowTime) <= 0) {
     clearInterval(timerId);
     return;
   }
