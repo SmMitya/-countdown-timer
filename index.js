@@ -8,7 +8,11 @@ const beginBtn = document.querySelector('#btn');
 const outputBlock = document.querySelector('.output');
 const completeTimer = document.querySelector('.complete');
 const resetBtn = document.querySelector('#btn-reset');
+const dateNumbers = document.querySelector('.numbers');
+let deadline;
+let timerId = null;
 
+// Скрытие стартого окна
 function closeFirstWindow() {
   inputBlock.classList.add('hide');
   beginBtn.classList.add('hide');
@@ -17,59 +21,60 @@ function closeFirstWindow() {
   resetBtn.classList.remove('hide');
 }
 
+// Скрытие окна с таймером
 function closeTimerWindow() {
   inputBlock.classList.remove('hide');
   beginBtn.classList.remove('hide');
 
   outputBlock.classList.add('hide');
   resetBtn.classList.add('hide');
+  completeTimer.classList.add('hide');
 } 
-
-function startTimer() {
-  let dateTimer = inputDate.value
-
-  if (!dateTimer) {
-    return alert('Введите дату для таймера!');
-  }
-
-  titleTimer.textContent = inputTitle.value;
-  closeFirstWindow();
-}
 
 function resetTimer() {
   titleTimer.textContent = 'Создать новый таймер обратного отсчета';
   inputDate.value = '';
   inputTitle.value = '';
+  completeTimer.textContent = '';
   closeTimerWindow();
 }
 
-beginBtn.addEventListener('click', startTimer);
+function startTimer() {
+  deadline = moment(inputDate.value);
 
+  if (isNaN(deadline)) {
+    return alert('Введите дату для таймера!');
+  }
+
+  titleTimer.textContent = inputTitle.value;
+  closeFirstWindow();
+  countdownTimer()
+  timerId = setInterval(countdownTimer, 1000);
+}
+
+function countdownTimer() {
+  const nowTime = moment();
+
+  if (deadline.diff(nowTime) <= 0) {
+    completeTimer.classList.remove('hide');
+    completeTimer.textContent = `${inputTitle.value} завершился ${deadline.format('DD.MM.YYYY hh:mm:ss')}`;
+    clearInterval(timerId);
+    return;
+  }
+
+  const days = deadline.diff(nowTime, 'days');
+  const hours = deadline.diff(nowTime, 'hours') % 24; 
+  const minutes = deadline.diff(nowTime, 'minutes') % 60; 
+  const seconds = deadline.diff(nowTime, 'seconds') % 60; 
+
+  dateNumbers.textContent = `${addZero(days)}:${addZero(hours)}:${addZero(minutes)}:${addZero(seconds)}`
+}
+
+// Добавление 0 в таймере если число < 10
+function addZero(value) {
+  return value < 10 ? '0' + value : value;
+}
+
+beginBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
 
-
-
-
-
-
-/* 
-1. Находим элементы html
-
-let title;
-let timeLabels;
-let buttonStart;
-
-2. При нажатии на кнопку "начать" , запускается таймер в блок с измененным заголовком, таймером и кнопкой сбросить 
-3. Время будем считать по часам, минутам секундам в сутках от времени нажатия кнопки "Начать".
-
-4. При не выбранной дате отсчета должна появляться ошибка , что дата не выбрана.
-
-5. Кнопка "Начать" изменяется на "сбросить".
-
-6. При нажатии на сбросить, возращаемся с исходному состоянию DOM.
-
-7. Убрать стандартное поведения кнопок и при обновление страницы сохранять значения счетчика.
-
-8. Когда таймер закончился, сообщение с поздравлением и оставляем кнопку сбросить.
-
-*/
