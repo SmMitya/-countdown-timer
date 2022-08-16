@@ -10,8 +10,6 @@ const completeTimer = document.querySelector('.complete');
 const resetBtn = document.querySelector('#btn-reset');
 const dateNumbers = document.querySelector('.numbers');
 let deadline;
-let deadlineLocal;
-let inputTitleLocal;
 let timerId = null;
 
 // Скрытие стартого окна
@@ -21,6 +19,9 @@ function closeFirstWindow() {
 
   outputBlock.classList.remove('hide');
   resetBtn.classList.remove('hide');
+
+  countdownTimer();
+  timerId = setInterval(countdownTimer, 1000);
 }
 
 // Скрытие окна с таймером
@@ -38,16 +39,8 @@ function resetTimer() {
   inputDate.value = '';
   inputTitle.value = '';
   completeTimer.textContent = '';
+  localStorage.clear();
   closeTimerWindow();
-}
-
-function getItemLocalStorage() {
-  if (!localStorage.getItem('deadlineLocal') && !localStorage.getItem('titleForTimer')) {
-    return;
-  }
-
-  deadlineLocal = moment(localStorage.getItem('deadlineLocal'));
-  inputTitleLocal = localStorage.getItem('titleForTimer');
 }
 
 function startTimer() {
@@ -58,28 +51,25 @@ function startTimer() {
     return alert('Введите дату для таймера!');
   }
 
+  titleTimer.textContent = inputTitle.value;
   localStorage.setItem('titleForTimer', inputTitle.value);
-  getItemLocalStorage();
-  titleTimer.textContent = inputTitleLocal;
   closeFirstWindow();
-  countdownTimer();
-  timerId = setInterval(countdownTimer, 1000);
 }
 
 function countdownTimer() {
   const nowTime = moment();
 
-  if (deadlineLocal.diff(nowTime) <= 0) {
+  if (deadline.diff(nowTime) <= 0) {
     completeTimer.classList.remove('hide');
-    completeTimer.textContent = `${inputTitleLocal} завершился ${deadlineLocal.format('DD.MM.YYYY hh:mm:ss')}`;
+    completeTimer.textContent = `${inputTitle.value} завершился ${deadline.format('DD.MM.YYYY hh:mm:ss')}`;
     clearInterval(timerId);
     return;
   }
 
-  const days = deadlineLocal.diff(nowTime, 'days');
-  const hours = deadlineLocal.diff(nowTime, 'hours') % 24; 
-  const minutes = deadlineLocal.diff(nowTime, 'minutes') % 60; 
-  const seconds = deadlineLocal.diff(nowTime, 'seconds') % 60; 
+  const days = deadline.diff(nowTime, 'days');
+  const hours = deadline.diff(nowTime, 'hours') % 24; 
+  const minutes = deadline.diff(nowTime, 'minutes') % 60; 
+  const seconds = deadline.diff(nowTime, 'seconds') % 60; 
 
   dateNumbers.textContent = `${addZero(days)}:${addZero(hours)}:${addZero(minutes)}:${addZero(seconds)}`
 }
@@ -89,6 +79,20 @@ function addZero(value) {
   return value < 10 ? '0' + value : value;
 }
 
+function getItemLocalStorage() {
+  let deadlineLocal = localStorage.getItem('deadlineLocal');
+  let inputTitleLocal = localStorage.getItem('titleForTimer');
+  if (!deadlineLocal && !inputTitleLocal) {
+    return;
+  }
+
+  deadline = moment(localStorage.getItem('deadlineLocal'));
+  titleTimer.textContent = localStorage.getItem('titleForTimer');
+  closeFirstWindow();
+}
+
 beginBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
+
+getItemLocalStorage(); //Запись данных в локальное хранилище
 
