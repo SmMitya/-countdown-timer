@@ -10,7 +10,7 @@ const completeTimer = document.querySelector('.complete');
 const resetBtn = document.querySelector('#btn-reset');
 const dateNumbers = document.querySelector('.numbers');
 let deadline;
-let timerId = null;
+let timerInterval = null;
 
 // Скрытие стартого окна
 function closeFirstWindow() {
@@ -19,6 +19,9 @@ function closeFirstWindow() {
 
   outputBlock.classList.remove('hide');
   resetBtn.classList.remove('hide');
+
+  countdownTimer();
+  timerInterval = setInterval(countdownTimer, 1000);
 }
 
 // Скрытие окна с таймером
@@ -36,20 +39,23 @@ function resetTimer() {
   inputDate.value = '';
   inputTitle.value = '';
   completeTimer.textContent = '';
+  localStorage.removeItem('deadlineLocal');
+  localStorage.removeItem('titleForTimer');
+  clearInterval(timerInterval);
   closeTimerWindow();
 }
 
 function startTimer() {
   deadline = moment(inputDate.value);
-
+  
   if (isNaN(deadline)) {
     return alert('Введите дату для таймера!');
   }
 
   titleTimer.textContent = inputTitle.value;
+  localStorage.setItem('deadlineLocal', inputDate.value);
+  localStorage.setItem('titleForTimer', inputTitle.value);
   closeFirstWindow();
-  countdownTimer()
-  timerId = setInterval(countdownTimer, 1000);
 }
 
 function countdownTimer() {
@@ -58,7 +64,7 @@ function countdownTimer() {
   if (deadline.diff(nowTime) <= 0) {
     completeTimer.classList.remove('hide');
     completeTimer.textContent = `${inputTitle.value} завершился ${deadline.format('DD.MM.YYYY hh:mm:ss')}`;
-    clearInterval(timerId);
+    clearInterval(timerInterval);
     return;
   }
 
@@ -75,6 +81,20 @@ function addZero(value) {
   return value < 10 ? '0' + value : value;
 }
 
+function getItemLocalStorage() {
+  let deadlineLocal = localStorage.getItem('deadlineLocal');
+  let inputTitleLocal = localStorage.getItem('titleForTimer');
+  if (!deadlineLocal && !inputTitleLocal) {
+    return;
+  }
+
+  deadline = moment(deadlineLocal);
+  titleTimer.textContent = inputTitleLocal;
+  closeFirstWindow();
+}
+
 beginBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
+
+getItemLocalStorage(); //Запись данных в локальное хранилище
 
