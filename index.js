@@ -12,41 +12,37 @@ const dateNumbers = document.querySelector('.numbers');
 
 class Timer {
   constructor() {
-    this.deadline;
-    this.timerInterval;
-    this.nowTime;
-    this.days;
-    this.hours;
-    this.minutes;
-    this.seconds;
+    this.deadline = null;
+    this.timerInterval = null;
+    this.activeTimer = false;
   }
 
-  get deadline() {
-    return this._deadline;
+  // Получаем дату до которой считаем
+  setDeadline() {
+    return this.deadline = moment(inputDate.value);
   }
-
-  set deadline(value) {
-    if (isNaN(value)) {
-      return alert('Введите дату для таймера!');
+  // Состояние таймера 
+  conditionTimer() {
+    if (isNaN(this.deadline)) {
+      this.deadline = null;
+      alert('Введите дату для таймера!');
+      return this.activeTimer;
     }
 
-    return this._deadline = value;
-  }
-  // Получаем дату до которой считаем
-  getDeadline() {
-    return this.deadline = moment(inputDate.value);
+    return this.activeTimer = true;
   }
   // Метод разницы дат
   diffTimer(value) {
-    return this.deadline.diff(this.nowTime, value);
+    const nowTime = moment();
+    return this.deadline.diff(nowTime, value);
   }
   // Метод очистки таймера
   clearTimerInterval() {
     return clearInterval(this.timerInterval);
   }
   // Метод вывода даты отсчета на экран
-  dateTimerNumbers() {
-    return `${this.addZero(this.days)}:${this.addZero(this.hours)}:${this.addZero(this.minutes)}:${this.addZero(this.seconds)}`;
+  dateTimerNumbers(days, hours, minutes, seconds) {
+    return `${this.addZero(days)}:${this.addZero(hours)}:${this.addZero(minutes)}:${this.addZero(seconds)}`;
   }
   // Метод добавления нуля к числам
   addZero(value) {
@@ -54,8 +50,6 @@ class Timer {
   }
   
   countdownTimer() {
-    this.nowTime = moment();
-
     if (this.diffTimer() <= 0) {
       completeTimer.classList.remove('hide');
       completeTimer.textContent = `${inputTitle.value} завершился ${this.deadline.format('DD.MM.YYYY hh:mm:ss')}`;
@@ -63,12 +57,12 @@ class Timer {
       return;
     }
   
-    this.days = this.diffTimer('days');
-    this.hours = this.diffTimer('hours') % 24; 
-    this.minutes = this.diffTimer('minutes') % 60; 
-    this.seconds = this.diffTimer('seconds') % 60; 
+    const days = this.diffTimer('days');
+    const hours = this.diffTimer('hours') % 24; 
+    const minutes = this.diffTimer('minutes') % 60; 
+    const seconds = this.diffTimer('seconds') % 60; 
   
-    dateNumbers.textContent = this.dateTimerNumbers();
+    dateNumbers.textContent = this.dateTimerNumbers(days, hours, minutes, seconds);
   }
   // Метод через сколько секунд интервал счета
   setTimerInterval() {
@@ -107,12 +101,21 @@ function resetTimer() {
   completeTimer.textContent = '';
   localStorage.removeItem('deadlineLocal');
   localStorage.removeItem('titleForTimer');
+
   timer.clearTimerInterval();
+  timer.deadline = null;
+  timer.activeTimer = false;
+
   closeTimerWindow();
 }
 
 function startTimer() {
-  timer.getDeadline();
+  timer.setDeadline();
+  timer.conditionTimer();
+
+  if (timer.activeTimer === false) {
+    return;
+  }
 
   titleTimer.textContent = inputTitle.value;
   localStorage.setItem('deadlineLocal', inputDate.value);
