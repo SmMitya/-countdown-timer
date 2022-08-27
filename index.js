@@ -16,10 +16,9 @@ class Timer {
     this.timerInterval = null;
     this.activeTimer = false;
   }
-
   // Получаем дату до которой считаем
   setDeadline() {
-    return this.deadline = moment(inputDate.value);
+    this.deadline = moment(inputDate.value);
   }
   // Состояние таймера 
   conditionTimer() {
@@ -29,7 +28,7 @@ class Timer {
       return this.activeTimer;
     }
 
-    return this.activeTimer = true;
+    this.activeTimer = true;
   }
   // Метод разницы дат
   diffTimer(value) {
@@ -38,7 +37,7 @@ class Timer {
   }
   // Метод очистки таймера
   clearTimerInterval() {
-    return clearInterval(this.timerInterval);
+    clearInterval(this.timerInterval);
   }
   // Метод вывода даты отсчета на экран
   dateTimerNumbers(days, hours, minutes, seconds) {
@@ -70,7 +69,7 @@ class Timer {
   }
 }
 
-let timer = new Timer();
+const timer = new Timer();
 
 // Скрытие стартого окна
 function closeFirstWindow() {
