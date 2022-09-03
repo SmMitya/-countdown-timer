@@ -1,5 +1,7 @@
 'use strict';
 
+import '../style.css'
+
 const titleTimer = document.querySelector('h1');
 const inputBlock = document.querySelector('.input');
 const inputTitle = document.querySelector('#title-date');
