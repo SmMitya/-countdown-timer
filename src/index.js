@@ -1,6 +1,6 @@
 'use strict';
 
-import '../style.css'
+import '../style.css';
 
 const titleTimer = document.querySelector('h1');
 const inputBlock = document.querySelector('.input');
