@@ -57,7 +57,7 @@ function resetTimer() {
 }
 
 function startTimer() {
-  timer = new Timer(moment(inputDate.value), dateNumbers, messageComplete);
+  timer = new Timer(inputDate.value, dateNumbers, messageComplete);
 
   if (timer.init() === false) {
     return;
@@ -76,7 +76,7 @@ function getItemLocalStorage() {
     return;
   }
 
-  timer = new Timer(moment(deadlineLocal), dateNumbers, messageComplete)
+  timer = new Timer(deadlineLocal, dateNumbers, messageComplete)
   timer.init();
   titleTimer.textContent = inputTitleLocal;
   closeFirstWindow();

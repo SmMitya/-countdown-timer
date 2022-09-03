@@ -1,7 +1,7 @@
 
 export default class Timer {
   constructor(date, dateNumbers, messageComplete) {
-    this.deadline = date;
+    this.deadline = moment(date);
     this.dateNumbers = dateNumbers;
     this.messageComplete = messageComplete;
     this.timerInterval = null;
