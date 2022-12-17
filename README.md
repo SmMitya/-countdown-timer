@@ -10,4 +10,4 @@ Build project
 ```
 npm run build
 ```
-https://SmMitya.github.io/-countdown-timer/
+https://SmMitya.github.io/-countdown-timer/index.html
